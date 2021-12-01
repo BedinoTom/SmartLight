@@ -15,7 +15,7 @@ Il était constitué de ballons remplis d'helium attachés à une arduino. Diver
 - un problème c'est posé sur le temps de vol, d'après l'expérience les ballons n'ont volés que quelques heures.
 > Problème non résolu.
 
-![Protyte de dirigeable](Images/IMG_20211128_194352.jpg "Protyte de dirigeable")
+![Protyte de dirigeable](../../Images/IMG_20211128_194352.jpg "Protyte de dirigeable")
 
 ## Travail de la séance
 
@@ -31,16 +31,19 @@ inséré dans la Maixduino. J'ai ensuite branché l'écran LCD qui devait faire 
 > Problème : la Maixduino nécéssite une connectique USB-C que je n'avais pas.
 Afin de ne pas rester coincé et de perdre du temps je suis passé sur la compréhension du module GPS qui sera détaillé
 dans la section suivante.
+
 Après avoir recu le cable j'ai téléversé le programme.
 > Problème : aucun téléversement.
+
 Les recherches ont montrés que le problème venait d'une erreur de configuration de l'IDE rapidement réglé.
 > Problème : l'écran LCD était noir et le moniteur serie indiquais un message d'erreur.
+
 Pour l'écran l'erreur venait d'une mauvais branchement sans conséquence pour le matériel. Pour le message d'erreur du moniteur série,
 cela a été plus compliqué. Il a fallu analyser le code. Ce-dernier montrais que la caméra utilisée était une OVH2460 or celle 
 fourni avec la Maixduino est une GC0328. Il a donc fallu téléchargé une librairie approprié (facilité par le récurrence
 de ce problème sur le github de la Maixduino) et modifié le code de l'exemple afin de remplacer le nom de la camére.
 Après ces problèmes résolus, le programme a démarré comme montre l'image suivante :
-![Maixduino](Images/IMG_20211201_125113_1.jpg "Maixduino")
+![Maixduino](../../Images/IMG_20211201_125113_1.jpg "Maixduino")
 Je n'ai pas d'image du fonctionnement de l'IA car le modèle est long à charger et qu'à cause du soucis de USB-C, il était
 la fin du temps imparti. Des précisions seront apportées dans le prochain rapport.
 
@@ -48,8 +51,9 @@ la fin du temps imparti. Des précisions seront apportées dans le prochain rapp
 
 Dans l'attente de l'USB-C, je me suis penché sur un autre aspect du dirigeable qui est le pilotage GPS. Pour cela j'ai
 obtenu un module GPS qui contenait également un compass (circuit permettant d'obtenir la direction magnétique).
-![GPS/Compass](Images/IMG_20211201_124141.jpg "GPS/Compass")
+![GPS/Compass](../../Images/IMG_20211201_124141.jpg "GPS/Compass")
 > Problème : le modèle possède six câbles sans aucune indication.
+
 Des recherches ont été effectués, et on permis de montrer que les 4 câbles permettait d'alimenter les modules et d'avoir
 une liaison série avec le module GPS et les 2 câbles permettait d'avoir une liaison I2C avec le module compass.
 Cela a permis d'alimenter une premier fois le module afin de voir s'il fonctionnait. Les recherches ont aussi permis
