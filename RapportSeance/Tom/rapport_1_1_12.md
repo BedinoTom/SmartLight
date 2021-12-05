@@ -47,6 +47,8 @@ Après ces problèmes résolus, le programme a démarré comme montre l'image su
 Je n'ai pas d'image du fonctionnement de l'IA car le modèle est long à charger et qu'à cause du soucis de USB-C, il était
 la fin du temps imparti. Des précisions seront apportées dans le prochain rapport.
 
+Voici un lien vers les codes : [link](../../Dirigeable/README.md)
+
 ### Compréhension du GPS
 
 Dans l'attente de l'USB-C, je me suis penché sur un autre aspect du dirigeable qui est le pilotage GPS. Pour cela j'ai
@@ -56,5 +58,6 @@ obtenu un module GPS qui contenait également un compass (circuit permettant d'o
 
 Des recherches ont été effectués, et on permis de montrer que les 4 câbles permettait d'alimenter les modules et d'avoir
 une liaison série avec le module GPS et les 2 câbles permettait d'avoir une liaison I2C avec le module compass.
-Cela a permis d'alimenter une premier fois le module afin de voir s'il fonctionnait. Les recherches ont aussi permis
-de trouver les librairies adéquates.
+Cela a permis d'alimenter une premier fois le module afin de voir s'il fonctionnait. Les recherches ont aussi permis de trouver la librairie
+pour le compass, son modèle est HMC5883L, et le [site](https://electroniqueamateur.blogspot.com/2019/06/fabrication-dune-boussole-avec-le.html) suivant indique un code pour le tester.
+En ce qui concerne le module GPS, sa liaison série envoie les données en permanence, il reste à trouver une librairie pour les décoder.
