@@ -1,4 +1,4 @@
-# Rapport de séance 2 du 05/01
+# Rapport de séance 3 du 05/01
 Lors de cette séance j'ai pu tester en condition réelle, la reconnaissance par IA. 
 J'ai également fait réparer le module permettant de récupérer l'heure. J'ai aussi tester
 le module bluetooth. J'ai ensuite utiliser le capteur thermique pour détecter le passage
