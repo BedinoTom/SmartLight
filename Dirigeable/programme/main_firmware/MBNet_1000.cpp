@@ -110,8 +110,8 @@ void MBNet_1000::show()
     for(j=0; j<STATISTICS_NUM; ++j)
         _statistics[j].updated = false;
     for ( i = 0; i < 5; i++)
-	{
-		label_get(i, &prob, &name);
+  {
+    label_get(i, &prob, &name);
         for(j=0; j<STATISTICS_NUM; ++j)
         {
             if(_statistics[j].name == NULL)
@@ -177,6 +177,11 @@ void MBNet_1000::show()
         }
     }
     img = _camera.getRGB565();
+    if(img == nullptr || img==0)
+    {
+     Serial.println("Error");
+     return; 
+    }
     _lcd.fillRect(224,0, _lcd.width()-224, _lcd.height(), COLOR_RED);
     _lcd.drawImage(0, 0, _camera.width(), _camera.height(), img);
     _lcd.setTextSize(2);
@@ -196,9 +201,9 @@ void MBNet_1000::show()
 
 void MBNet_1000::label_init( )
 {
-	int i;
-	for(i = 0; i < _count; i++)
-		_index[i] = i;
+  int i;
+  for(i = 0; i < _count; i++)
+    _index[i] = i;
 }
 
 void MBNet_1000::label_sort(void)
@@ -223,6 +228,6 @@ void MBNet_1000::label_sort(void)
 
 void MBNet_1000::label_get(uint16_t index, float* prob, const char** name)
 {
-	*prob = _result[index];
-	*name = _names[_index[index]];
+  *prob = _result[index];
+  *name = _names[_index[index]];
 }

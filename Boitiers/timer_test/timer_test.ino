@@ -16,12 +16,12 @@ void setDateDs1307()
 {
 
 second =45;
-minute = 29;
-hour = 13;
-dayOfWeek = 2;
-dayOfMonth =18;
-month =9;
-year= 12;
+minute = 16;
+hour = 10;
+dayOfWeek = 3;
+dayOfMonth =5;
+month =1;
+year= 21;
 Wire.beginTransmission(DS1307_I2C_ADDRESS);
 Wire.write(decToBcd(0));
 Wire.write(decToBcd(second)); // 0 to bit 7 starts the clock
@@ -67,7 +67,7 @@ Serial.println();
 void setup() {
 Wire.begin();
 Serial.begin(9600);
-//setDateDs1307(); //Set current time;
+setDateDs1307(); //Set current time;
 }
 void loop()
 {

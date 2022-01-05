@@ -33,7 +33,6 @@ public:
     void show();
     const char** _names;
 
-private:
     KPUClass&      _kpu;
     Sipeed_ST7789& _lcd;
     Maixduino_GC0328& _camera;

@@ -18,8 +18,8 @@ void loop() {
 
 void stateChange()  //Interrupt function
 {  
+  Serial.println("State");
   count++;  
-
 }
 
 void process()   //Timer handler
