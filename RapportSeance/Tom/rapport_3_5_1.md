@@ -17,7 +17,7 @@ En effet il existe une version du firmware (le micrologiciel qui gère la maixdu
 "live-python", c'est à dire que nous codons en python dans un ide et nous pouvons l'envoyer sur l'arduino
 et voir le retour de l'ecran LCD sur le logiciel.
 Comme on peut le voir ci-dessous (dans le cadre marquer "Pas d'image")
-![Maixpy](../../Images/maixpy.jpg "Maixpy")
+![Maixpy](../../Images/maixpy.png "Maixpy")
 Quand le programme fut finaliser, on peut l'inscrire dans le firmware, ainsi que le fichier
 qui sert de modèle à l'IA, comme cela le code python le charge à partir d'une adresse 
 mémoire, ce qui est plus rapide.
