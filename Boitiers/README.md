@@ -10,3 +10,8 @@ représentant la quantité de lumière.
 - [Timer](timer_test) : Programme permettant de sauvegarder et de lire la date.
 - [Camera Thermique](temperatureMatrix) : Programme permettant de récuperer la matrice thermique.
 - [Module bluetooth](ble_test) : Programme permettant de tester le bluetooth.
+
+## Modèle 3D
+Voici la liste des modèles 3D liée au boitier :
+- [Plaquette](schema_impression_3d) : Modèle de la plaquette tenant les capteurs afin de les tester
+en condition stable.
