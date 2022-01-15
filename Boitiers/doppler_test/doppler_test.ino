@@ -9,7 +9,7 @@ void setup() {
 }
 
 void loop() {
-  if((millis()-timer)>1000)
+  if((millis()-timer)>100)
   {
     process();
     timer=millis();

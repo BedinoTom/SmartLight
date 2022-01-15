@@ -11,6 +11,120 @@ SoftwareSerial BlueT(RX,TX);
 byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
 float matrix_temp[64];
 bool is_empty_matrice=true;
+int count_doppler=0,timer_doppler=0;
+
+void setup() {
+Wire.begin();
+Serial.begin(9600);
+BlueT.begin(9600);
+//setDateDs1307(); //Set current time;
+sensor.initI2C();
+Serial.print("Resetting sensor ... ");  
+int statusCode = sensor.resetFlagsAndSettings();
+Serial.println(sensor.getErrorDescription(statusCode));
+
+Serial.print("Setting FPS ... ");
+statusCode = sensor.setFPSMode(FPS_MODE::FPS_10);
+Serial.println(sensor.getErrorDescription(statusCode));
+
+for(int i=0;i<8;i++)
+{
+  for(int j=0;j<8;j++)
+  {
+    matrix_temp[i + j*8] = 0.0f;
+  }
+}
+
+attachInterrupt(digitalPinToInterrupt(2), stateChange_doppler, FALLING);
+timer_doppler=millis(); 
+}
+
+
+void loop()
+{
+delay(500);
+getDateDs1307();//get the time data from tiny RTC
+
+  //Serial.print("Updating thermistor temperature ... ");
+  int statusCode = sensor.updateThermistorTemperature();
+  //Serial.println(sensor.getErrorDescription(statusCode));
+
+  //Serial.print("Updating pixel matrix ... ");
+  statusCode = sensor.updatePixelMatrix();
+  //Serial.println(sensor.getErrorDescription(statusCode));
+
+  //Serial.print("Thermistor temp: ");
+  //Serial.print(sensor.thermistorTemperature);
+  //Serial.println("°C");
+
+  //Serial.println("Temperature Matrix: ");
+  float diff=0;
+  if(!is_empty_matrice)
+  {
+    for (int x = 0; x < 8; x++){
+      for (int y = 0; y < 8; y++){
+        diff = diff + abs(sensor.pixelMatrix[y][x] - matrix_temp[y*8 + x]);
+      }
+    }
+  }
+
+  //Serial.println(diff);
+
+  if(diff > 30)
+  {
+    BlueT.println("person*a");
+  }
+
+  for (int x = 0; x < 8; x++){
+      for (int y = 0; y < 8; y++){
+        matrix_temp[y*8 + x] = sensor.pixelMatrix[y][x];
+      }
+    }
+
+  if(is_empty_matrice)
+  {
+    is_empty_matrice=false;
+  }
+
+  if(BlueT.available())
+  {
+    char code=BlueT.read();
+    if(code == 'C')
+    {
+      Serial.println("LED ON");
+    }
+    else if(code == 'c')
+    {
+      Serial.println("LED OFF");
+    }
+  }
+  
+
+  Serial.print("Light : ");
+  Serial.println(analogRead(A0));
+
+ if((millis()-timer_doppler)>100)
+  {
+     if(count_doppler>1)  
+     {
+        BlueT.println("person2*a");
+        count_doppler=0;   //Count zero
+    }
+    else
+    {
+        count_doppler=0; 
+    }
+    timer_doppler=millis();
+  }
+  
+}
+
+void stateChange_doppler()  //Interrupt function
+{  
+  Serial.println("State");
+  count_doppler++;  
+}
+
 
 // Convert normal decimal numbers to binary coded decimal
 byte decToBcd(byte val)
@@ -74,75 +188,4 @@ Serial.print(year,DEC);
 Serial.print(" ");
 Serial.println();
 //Serial.print("Day of week:");
-}
-void setup() {
-Wire.begin();
-Serial.begin(9600);
-BlueT.begin(9600);
-setDateDs1307(); //Set current time;
-sensor.initI2C();
-Serial.print("Resetting sensor ... ");  
-int statusCode = sensor.resetFlagsAndSettings();
-Serial.println(sensor.getErrorDescription(statusCode));
-
-Serial.print("Setting FPS ... ");
-statusCode = sensor.setFPSMode(FPS_MODE::FPS_10);
-Serial.println(sensor.getErrorDescription(statusCode));
-
-for(int i=0;i<8;i++)
-{
-  for(int j=0;j<8;j++)
-  {
-    matrix_temp[i + j*8] = 0.0f;
-  }
-}
-}
-
-
-void loop()
-{
-delay(500);
-//getDateDs1307();//get the time data from tiny RTC
-
-  //Serial.print("Updating thermistor temperature ... ");
-  int statusCode = sensor.updateThermistorTemperature();
-  //Serial.println(sensor.getErrorDescription(statusCode));
-
-  //Serial.print("Updating pixel matrix ... ");
-  statusCode = sensor.updatePixelMatrix();
-  //Serial.println(sensor.getErrorDescription(statusCode));
-
-  //Serial.print("Thermistor temp: ");
-  //Serial.print(sensor.thermistorTemperature);
-  //Serial.println("°C");
-
-  //Serial.println("Temperature Matrix: ");
-  float diff=0;
-  if(!is_empty_matrice)
-  {
-    for (int x = 0; x < 8; x++){
-      for (int y = 0; y < 8; y++){
-        diff = diff + abs(sensor.pixelMatrix[y][x] - matrix_temp[y*8 + x]);
-      }
-    }
-  }
-
-  Serial.println(diff);
-
-  if(diff > 30)
-  {
-    BlueT.println("person*a");
-  }
-
-  for (int x = 0; x < 8; x++){
-      for (int y = 0; y < 8; y++){
-        matrix_temp[y*8 + x] = sensor.pixelMatrix[y][x];
-      }
-    }
-
-  if(is_empty_matrice)
-  {
-    is_empty_matrice=false;
-  }
-  
 }
