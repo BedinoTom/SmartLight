@@ -2,22 +2,72 @@
 #include <stdlib.h>
 #include <string.h>
 
-char** split_char(char *string, char *delimit);
+typedef struct {
+	char **array;
+	int size;
+	int current_pointer;
+}my_splitarray;
+
+typedef struct {
+	my_splitarray *_map;
+	int size;
+	int current_pointer;
+}my_map;
+
+void split_char(my_splitarray *sta, char *string, char *delimit);
+void free_splitchar(my_splitarray *sta);
+char* get_splitchar_element(my_splitarray *sta, int index);
+void parse_map_string(my_map *_map,char *string, char *delimit_element, char *delimit_map);
+char* getValueFromKeyMap(my_map *_map, char* key);
+void free_map(my_map *_map);
 
 int main(int argc,char **argv)
 {
-	printf("Test\n");
-	char **arr=split_char("1,2,3,4",",");
-	if(arr != NULL)
-	{
-	//printf(arr[0]);
+	my_map mymap;
 	
-	free(arr);
-	}
+	parse_map_string(&mymap,"tom=89;bedino=45",";","=");
+	
+	printf("%s\n",getValueFromKeyMap(&mymap,"tom"));
+	printf("%s\n",getValueFromKeyMap(&mymap,"bedino"));
+	
+	free_map(&mymap);
 	return 0;
 }
 
-char** split_char(char *string, char *delimit)
+void parse_map_string(my_map *_map,char *string, char *delimit_element, char *delimit_map)
+{
+	my_splitarray element;
+	split_char(&element,string,delimit_element);
+	if(element.array != NULL)
+	{
+		_map->size = element.size;
+		_map->_map = (my_splitarray*)malloc(_map->size * sizeof(my_splitarray));
+		if(_map->_map==NULL)
+		{
+			return;
+		}
+		for(int i=0;i<element.size;i++)
+		{
+			char *el = get_splitchar_element(&element,i);
+			split_char(&_map->_map[i],el,delimit_map);
+		}
+	}
+	free_splitchar(&element);
+}
+
+char* getValueFromKeyMap(my_map *_map, char* key)
+{
+	for(int i=0;i<_map->size;i++)
+	{
+		if(strcmp(_map->_map[i].array[0],key)==0)
+		{
+			return _map->_map[i].array[1];
+		}
+	}
+	return "";
+}
+
+void split_char(my_splitarray *sta,char *string, char *delimit)
 {
 	int i;
 	int count=0;
@@ -28,32 +78,64 @@ char** split_char(char *string, char *delimit)
 			count++;
 		}
 	}
+	
 	if(count == 0)
 	{
-		return NULL;
+		return;
 	}
-	printf("Count : %ld\n",count);
-	char **array = (char**)malloc(count * sizeof(char*));
-    for (i = 0; i < count; i++)
-        array[i] = (char*)malloc(strlen(string) * sizeof(char));
-	printf("alloc good\n");
-	char* ptr = strtok(string, ",");
-	if(ptr==NULL)
+	
+	sta->current_pointer=0;
+	sta->size = count+1;
+	sta->array = (char**)malloc((count+1) * sizeof(char*));
+	
+	int start=0;
+	count=0;
+	for(i=0;i<strlen(string);i++)
 	{
-		printf("None\n");
-		free(array);
-		return NULL;
+		if(string[i] == delimit[0])
+		{
+			sta->array[count] = (char*)malloc((i-start)+1 * sizeof(char));
+			memcpy(sta->array[count],&string[start],(i-start));
+			sta->array[count][(i-start)]='\0';
+			count++;
+			start=i+1;
+		}
 	}
-	printf("OK\n");
 	
-	i=0;
-	
-	while(ptr)
+	sta->array[count] = (char*)malloc((strlen(string)-start)+1 * sizeof(char));
+	memcpy(sta->array[count],&string[start],(strlen(string)-start));
+}
+
+char* get_splitchar_element(my_splitarray *sta, int index)
+{
+	if(index >= 0 && index < sta->size)
 	{
-			/*strcpy(array[i],ptr);
-			i++;
-			ptr = strtok(NULL, ",");*/
+		return sta->array[index];
 	}
 	
-	return array;
+	return NULL;
+}
+
+void free_map(my_map *_map)
+{
+	for(int i=0;i<_map->size;i++)
+	{
+		free_splitchar(&_map->_map[i]);
+	}
+}
+
+void free_splitchar(my_splitarray *sta)
+{
+	for(int i=0;i<sta->size;i++)
+	{
+		if(sta->array[i] != NULL)
+		{
+			free(sta->array[i]);
+		}
+	}
+	
+	if(sta->array != NULL)
+	{
+		free(sta->array);
+	}
 }
