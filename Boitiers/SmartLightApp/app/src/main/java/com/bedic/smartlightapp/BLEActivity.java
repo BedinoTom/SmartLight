@@ -1,6 +1,7 @@
 package com.bedic.smartlightapp;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,18 +25,10 @@ public class BLEActivity extends AppCompatActivity {
 
         Set<BluetoothDevice> devices = MainActivity.bluetoothAdapter.getBondedDevices();
         Peripherique users[] = new Peripherique[devices.toArray().length];
-        Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                String status = (String) msg.obj;
-                System.out.println("<Socket>" + status);
-                Toast.makeText(getApplicationContext(), "Text"+status, Toast.LENGTH_SHORT).show();
-            }
-        };
         int i=0;
         for (BluetoothDevice blueDevice : devices)
         {
-            users[i] = new Peripherique(blueDevice,handler);
+            users[i] = new Peripherique(blueDevice,null);
             i++;
         }
 
@@ -48,14 +41,11 @@ public class BLEActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                 Object o = listView.getItemAtPosition(position);
-                if(MainActivity.mConnect_device != null)
-                {
-                    MainActivity.mConnect_device.deconnecter();
-                }
-                MainActivity.mConnect_device = (Peripherique) o;
-                MainActivity.mConnect_device.connecter();
-                while(!MainActivity.mConnect_device.estConnecte());
-                MainActivity.mConnect_device.envoyer("hello world");
+                Peripherique p = (Peripherique)o;
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("address_choose",p.getAdresse());
+                setResult(MainActivity.RESULT_OK,returnIntent);
+                finish();
             }
         });
     }

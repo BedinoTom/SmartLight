@@ -23,6 +23,7 @@ public class Peripherique implements Serializable {
     private InputStream receiveStream = null;
     private OutputStream sendStream = null;
     private TReception tReception;
+    private boolean error = false;
     public final static int CODE_CONNEXION = 0;
     public final static int CODE_RECEPTION = 1;
     public final static int CODE_DECONNEXION = 2;
@@ -70,8 +71,11 @@ public class Peripherique implements Serializable {
         return adresse;
     }
 
-    public boolean estConnecte()
-    {
+    public boolean estConnecte() throws PeripheriqueInternalError {
+        if(error)
+        {
+            throw new PeripheriqueInternalError();
+        }
        return socket.isConnected();
     }
 
@@ -97,7 +101,8 @@ public class Peripherique implements Serializable {
 
                     Message msg = Message.obtain();
                     msg.arg1 = CODE_CONNEXION;
-                    msg.obj = (Object)"Connect Ok";
+                    MyMessage msg2 = new MyMessage(CODE_CONNEXION,"Connect Ok");
+                    msg.obj = (Object)msg2;
                     handler.sendMessage(msg);
 
                     tReception.start();
@@ -105,6 +110,7 @@ public class Peripherique implements Serializable {
                 }
                 catch (IOException e)
                 {
+                    error = true;
                     System.out.println("<Socket> error connect");
                     e.printStackTrace();
                 }
@@ -174,22 +180,27 @@ public class Peripherique implements Serializable {
         @Override
         public void run() {
             BufferedReader reception = new BufferedReader(new InputStreamReader(_receiveStream));
+            char[] mmBuffer = new char[1024];
+            int numBytes=0;
             while (!fini) {
                 try {
-                    String trame = "";
-                    if (reception.ready()) {
-                        trame = reception.readLine();
-                        System.out.println("<Socket>"+trame);
-                    }
-                    if (trame.length() > 0) {
-                        //Log.d(TAG, "run() trame : " + trame);
+                    numBytes = reception.read(mmBuffer);
+
+                    if(numBytes > 0)
+                    {
                         Message msg = Message.obtain();
                         msg.what = Peripherique.CODE_RECEPTION;
-                        msg.obj = trame;
+                        MyMessage msg2 = new MyMessage(Peripherique.CODE_RECEPTION,mmBuffer,numBytes);
+                        msg.obj = (Object)msg2;
                         handlerUI.sendMessage(msg);
                     }
                 } catch (IOException e) {
                     System.out.println("<Socket> error read");
+                    e.printStackTrace();
+                }
+                catch (Exception e)
+                {
+                    System.out.println("<Socket> error read 2");
                     e.printStackTrace();
                 }
                 try {
@@ -210,5 +221,18 @@ public class Peripherique implements Serializable {
                 e.printStackTrace();
             }
         }
+    }
+}
+
+
+class PeripheriqueInternalError extends Exception {
+    public PeripheriqueInternalError()
+    {
+        super();
+    }
+
+    public PeripheriqueInternalError(String message)
+    {
+        super(message);
     }
 }
