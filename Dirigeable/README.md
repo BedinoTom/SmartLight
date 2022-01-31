@@ -11,3 +11,4 @@ Voici la liste des progammes conçu pour le dirigeable:
 (Nécessite le modelè [m.kmodel](mobilenet_model/m.kmodel), il doit etre renomer en "m" et mis sur une SD) (OBSOLETE)
 - [yolo_firmware](programme/yolo_firmware) : Programme permettant d'effectuer la reconnaisse IA depuis la camera.
 (Le modèle [YOLO](yolo2_model/) est directement intégré dans le micrologiciel)
+- [Controle_du_drone](controle_drone_firmware) : Programme pour controller les moteurs du drones.
