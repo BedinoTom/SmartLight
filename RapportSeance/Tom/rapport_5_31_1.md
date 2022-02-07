@@ -11,7 +11,7 @@ clé=valeur;clé2=valeur2;. L'application sert à activer/désactiver le lampada
 L'application peut envoyer une date et une heure pour désactiver la détection. Et pour finir elle peut savoir si une personne ou
 un véhicule a été détecté.
 Voici une capture d'écran:
-![Protyte d'application](../../Images/Screenshot_2022-01-31-12-14-43-151_com.bedic.smartlightapp.jpg "Protyte de l'application")
+![Prototyte d'application](../../Images/Screenshot_2022-01-31-12-14-43-151_com.bedic.smartlightapp.jpg "Prototyte de l'application")
 L'application sera enrichie prochainement afin de pouvoir controller le dirigeable.
 
 ## Librairie C

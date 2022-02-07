@@ -24,13 +24,25 @@ void free_map(my_map *_map);
 int main(int argc,char **argv)
 {
 	my_map mymap;
+	char buf[500];
 	
-	parse_map_string(&mymap,"tom=89;bedino=45",";","=");
+	buf[0]='i';
+	buf[1]='=';
+	buf[2]='9';
+	buf[3]=';';
+	buf[4]='\0';
+	buf[5] = 't';
+	buf[6] = 'g';
 	
-	printf("%s\n",getValueFromKeyMap(&mymap,"tom"));
-	printf("%s\n",getValueFromKeyMap(&mymap,"bedino"));
+	printf("%ld",strlen(buf));
+	
+	parse_map_string(&mymap,buf,";","=");
+	
+	printf("%s\n",getValueFromKeyMap(&mymap,"i"));
+	//printf("%s\n",getValueFromKeyMap(&mymap,"bedino"));
 	
 	free_map(&mymap);
+
 	return 0;
 }
 
