@@ -10,6 +10,9 @@ représentant la quantité de lumière.
 - [Timer](timer_test) : Programme permettant de sauvegarder et de lire la date.
 - [Camera Thermique](temperatureMatrix) : Programme permettant de récuperer la matrice thermique.
 - [Module bluetooth](ble_test) : Programme permettant de tester le bluetooth.
+- [SmartApp](SmartLightApp) : Application Android.
+- [c_lib](c_lib) : Fonctionnalitées pour décoder.
+- [Bluetooth decode](ble_decode) : Programme de décodage des commandes de l'application
 
 ## Modèle 3D
 Voici la liste des modèles 3D liée au boitier :
