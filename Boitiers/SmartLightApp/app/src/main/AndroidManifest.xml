@@ -20,6 +20,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".BLEActivity">
+        </activity>
+        <activity android:name=".PilotActivity">
 
         </activity>
     </application>

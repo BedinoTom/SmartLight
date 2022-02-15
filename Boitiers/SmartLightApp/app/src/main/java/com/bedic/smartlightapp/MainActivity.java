@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static Peripherique mConnect_device = null;
 
     private Context mContext;
-    private Button bt_connect, bt_send_time;
+    private Button bt_connect, bt_send_time, bt_pilot;
     private Switch switch_light, switch_detect;
     private TextView text_link, text_light, text_detect_switch, text_detect;
     private EditText date_stop, time_stop;
@@ -154,6 +154,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bt_connect.setOnClickListener(this);
         bt_send_time = (Button)findViewById(R.id.button);
         bt_send_time.setOnClickListener(this);
+        bt_pilot = (Button)findViewById(R.id.button3);
+        bt_pilot.setOnClickListener(this);
         switch_light = (Switch)findViewById(R.id.switch1);
         switch_light.setOnCheckedChangeListener(this);
         switch_detect = (Switch)findViewById(R.id.switch2);
@@ -264,6 +266,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } catch (PeripheriqueInternalError peripheriqueInternalError) {
                     peripheriqueInternalError.printStackTrace();
                 }
+                break;
+            case R.id.button3:
+                Intent intent=new Intent(mContext,PilotActivity.class);
+                startActivity(intent);
                 break;
         }
     }
