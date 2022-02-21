@@ -5,13 +5,19 @@
 
 #define RX 10
 #define TX 11
+#define LED_PIN 4
+#define TIME_DETECT_STAY_ON 4000
 
 Melopero_AMG8833 sensor;
 SoftwareSerial BlueT(RX,TX);
 byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
 float matrix_temp[64];
-bool is_empty_matrice=true;
-int count_doppler=0,timer_doppler=0;
+bool is_empty_matrice=true,is_collide=false,led_state=false,detect_state=false;
+int count_doppler=0,timer_doppler=0,timer_collide=0;
+char buf[50];
+int count_buffer=0,valid=0;
+
+void getValueFromKeyMap(char *_map, char* key, char*buf);
 
 void setup() {
 Wire.begin();
@@ -37,6 +43,9 @@ for(int i=0;i<8;i++)
 
 attachInterrupt(digitalPinToInterrupt(2), stateChange_doppler, FALLING);
 timer_doppler=millis(); 
+
+pinMode(LED_PIN,OUTPUT);
+digitalWrite(LED_PIN,HIGH);
 }
 
 
@@ -68,11 +77,16 @@ getDateDs1307();//get the time data from tiny RTC
     }
   }
 
-  //Serial.println(diff);
+  Serial.print("Diff Temp : ");
+  Serial.println(diff);
 
   if(diff > 30)
   {
-    BlueT.println("person*a");
+    is_collide=true;
+  }
+  else
+  {
+    is_collide=false;
   }
 
   for (int x = 0; x < 8; x++){
@@ -86,20 +100,6 @@ getDateDs1307();//get the time data from tiny RTC
     is_empty_matrice=false;
   }
 
-  if(BlueT.available())
-  {
-    char code=BlueT.read();
-    if(code == 'C')
-    {
-      Serial.println("LED ON");
-    }
-    else if(code == 'c')
-    {
-      Serial.println("LED OFF");
-    }
-  }
-  
-
   Serial.print("Light : ");
   Serial.println(analogRead(A0));
 
@@ -107,16 +107,96 @@ getDateDs1307();//get the time data from tiny RTC
   {
      if(count_doppler>1)  
      {
-        BlueT.println("person2*a");
+        is_collide=true;
         count_doppler=0;   //Count zero
     }
     else
     {
+        is_collide=false;
         count_doppler=0; 
     }
     timer_doppler=millis();
   }
-  
+
+  if(is_collide && detect_state)
+  {
+    BlueT.println("collide=on;");
+    timer_collide=millis();
+  }
+
+  if((millis()-timer_collide)>TIME_DETECT_STAY_ON && !is_collide)
+  {
+    BlueT.println("collide=off;");
+  }
+
+  while(BlueT.available())
+  {
+    if(count_buffer>=499)
+     {
+        break;
+     }
+     char c = char(BlueT.read());
+     if(c == ';')
+     {
+      valid++;
+     }
+     //Serial.write(c);
+     buf[count_buffer] = c;
+     count_buffer++;
+  }
+
+  if(valid == 2)
+  {
+    char values[50],arg1[50];
+    getValueFromKeyMap(buf,"cmd",values);
+    getValueFromKeyMap(buf,"arg1",arg1);
+    Serial.println(arg1);
+    if(strcmp(values,"light")==0)
+    {
+      if(strcmp(arg1,"true")==0)
+      {
+        led_state=true;
+      }
+      else
+      {
+        led_state=false;
+      }
+    }
+    else if(strcmp(values,"detect")==0)
+    {
+      if(strcmp(arg1,"true")==0)
+      {
+        detect_state=true;
+      }
+      else
+      {
+        detect_state=false;
+      }
+    }
+    sprintf(buf,"");
+    valid=0;
+    count_buffer=0;
+  }
+
+  if(led_state)
+  {
+    digitalWrite(LED_PIN,LOW);
+    BlueT.println("light=on;");
+  }
+  else
+  {
+    digitalWrite(LED_PIN,HIGH);
+    BlueT.println("light=off;");
+  }
+
+  if(detect_state)
+  {
+    BlueT.println("detect=on;");
+  }
+  else
+  {
+    BlueT.println("detect=off;");
+  }
 }
 
 void stateChange_doppler()  //Interrupt function
@@ -174,6 +254,7 @@ dayOfWeek = bcdToDec(Wire.read());
 dayOfMonth = bcdToDec(Wire.read());
 month = bcdToDec(Wire.read());
 year = bcdToDec(Wire.read());
+Serial.print("Date : ");
 Serial.print(hour, DEC);
 Serial.print(":");
 Serial.print(minute, DEC);
@@ -188,4 +269,32 @@ Serial.print(year,DEC);
 Serial.print(" ");
 Serial.println();
 //Serial.print("Day of week:");
+}
+
+void getValueFromKeyMap(char *_map, char* key, char*buf)
+{
+  String _str = String(_map);
+  String m_key = String(key);
+  String temp="";
+  int offset_search=0, offset_find=0;
+  while((offset_find=_str.indexOf(";",offset_search)) != -1){
+        temp=_str.substring(offset_search,offset_find);
+        int offset_equal=temp.indexOf("=");
+        String _key=temp.substring(0,offset_equal);
+        String _value=temp.substring(offset_equal+1);
+        if(_key==m_key)
+        {
+          //return _value.c_str();
+          memcpy(buf,_value.c_str(),_value.length());
+          buf[_value.length()]='\0';
+         return;
+        }
+
+        offset_search=offset_find+1;
+        if(offset_search>=_str.length())
+        {
+          break;
+        }
+  }
+  memcpy(buf,'\0',1);
 }
