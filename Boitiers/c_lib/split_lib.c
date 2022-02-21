@@ -34,7 +34,7 @@ int main(int argc,char **argv)
 	buf[5] = 't';
 	buf[6] = 'g';
 	
-	printf("%ld",strlen(buf));
+	printf("%ld\n",strlen(buf));
 	
 	parse_map_string(&mymap,buf,";","=");
 	

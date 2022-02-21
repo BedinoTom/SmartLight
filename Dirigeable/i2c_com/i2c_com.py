@@ -6,11 +6,13 @@ from board import board_info
 
 board_info.load({
     'PIN_8': 14,
+    'PIN_9': 13,
     'BOOT_KEY': 16,
 })
 
 from fpioa_manager import fm
 fm.register(board_info.PIN_8, fm.fpioa.GPIOHS0, force=True)
+fm.register(board_info.PIN_9, fm.fpioa.GPIOHS1, force=True)
 
 from Maix import GPIO
 
@@ -18,6 +20,7 @@ def test_irq(pin_num):
     print("key", pin_num)
 
 key=GPIO(GPIO.GPIOHS0, GPIO.IN, GPIO.PULL_UP)
+key2=GPIO(GPIO.GPIOHS1, GPIO.OUT)
 key.irq(test_irq, GPIO.IRQ_BOTH, GPIO.WAKEUP_NOT_SUPPORT, 7)
 
 lcd.init(freq=15000000)
@@ -32,6 +35,10 @@ while(True):
     img = sensor.snapshot()
     img.draw_string(10, 24, str(key.value()), color=(255, 0, 0), scale=2)
     a = lcd.display(img)
+    if key.value()==0:
+        key2.value(1)
+    else:
+        key2.value(0)
 
 
 
