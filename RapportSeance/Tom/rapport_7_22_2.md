@@ -53,4 +53,3 @@ Le travail suivant est à réaliser pour la prochaine fois :
 - Liaison inter-lampadaire
 - Module GPS et Compass pour le drone
 - Liaison drone-lampadaire
- 
