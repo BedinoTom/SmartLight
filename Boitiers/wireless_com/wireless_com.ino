@@ -4,14 +4,17 @@
 
 void setup() {
   Serial.begin(9600);            
-  Serial1.begin(9600);           
+  Serial1.begin(9600);   
+  pinMode(2,OUTPUT);        
 }
 
 void loop() {
   while (Serial1.available()) {
     Serial.write(Serial1.read());
+          digitalWrite(2,HIGH);
   }
   while (Serial.available()) { 
-    Serial1.write(Serial.read());
+    char c = Serial.read();
+    Serial1.write(c);
   }
 }
