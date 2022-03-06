@@ -6,7 +6,7 @@
 #define RX 10
 #define TX 11
 
-void getValueFromKeyMap(char *_map, char* key, char*buf);
+void getValueFromKeyMap(String _map, char* key, char*buf);
 
 SoftwareSerial BlueT(RX,TX);
 
@@ -19,27 +19,17 @@ void setup() {
  Serial.println("BLE OK");
 }
 
-char buf[500];
-int i=0,valid=0;
+String buf;
+int valid=0;
 
 void loop() {
   while(BlueT.available())
   {
-    if(i>=499)
-     {
-        break;
-     }
-     char c = char(BlueT.read());
-     if(c == ';')
-     {
-      valid++;
-     }
-     //Serial.write(c);
-     buf[i] = c;
-     i++;
+    buf = BlueT.readString();
+     valid++;
   }
 
-  if(valid == 2)
+  if(valid > 0)
   {
     char values[50],arg1[50];
     getValueFromKeyMap(buf,"cmd",values);
@@ -56,16 +46,14 @@ void loop() {
         BlueT.println("light=off;");
       }
     }
-    sprintf(buf,"");
     valid=0;
-    i=0;
   }
   
 }
 
-void getValueFromKeyMap(char *_map, char* key, char*buf)
+void getValueFromKeyMap(String _map, char* key, char*buf)
 {
-  String _str = String(_map);
+  String _str = _map;
   String m_key = String(key);
   String temp="";
   int offset_search=0, offset_find=0;
